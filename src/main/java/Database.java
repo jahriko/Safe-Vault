@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.table.DefaultTableModel;
 
 public class Database {
     public static Connection connect = null;
@@ -22,7 +23,7 @@ public class Database {
         try {
             if (isDatabaseExist(fileAbsolutePath)) {
                 connect = DriverManager.getConnection(URL + fileAbsolutePath);
-                System.out.println("-DATABASE CONNECTED-=-=-");
+
             } else {
                 createDatabase("safeVault");
                 connect = DriverManager.getConnection(URL + fileAbsolutePath);
@@ -86,5 +87,57 @@ public class Database {
             System.out.println("===ERROR AT insertData()===\n");
             e.printStackTrace();
         } 
+    }
+    
+    public static void updateSQLData(String site, 
+                                     String email, 
+                                     String username, 
+                                     String password, 
+                                     String details,
+                                     String tableRow) {
+        
+        final String SQL = """
+                     UPDATE safeVault 
+                     SET site = ?, 
+                         email = ?,
+                         username = ?,
+                         password = ?,
+                         details = ?
+                     WHERE rowid = ?
+                     """;
+        
+        try (Connection connect = Database.getConnection();
+             PreparedStatement prepStat = connect.prepareStatement(SQL);) {
+            
+                if (connect != null) {
+                    prepStat.setString(1, site);
+                    prepStat.setString(2, email);
+                    prepStat.setString(3, username);
+                    prepStat.setString(4, password);
+                    prepStat.setString(5, details);
+                    prepStat.setString(6, tableRow);
+                    prepStat.executeUpdate();
+                    
+                }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void deleteSQL(String rowID) {
+        final String SQL = "DELETE FROM safeVault WHERE rowid = " + rowID + ";";
+
+        try (Connection connect = Database.getConnection();
+             Statement statement = connect.createStatement();) {
+
+            statement.executeUpdate(SQL);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ((DefaultTableModel) Frame.jTable1.getModel()).removeRow(Integer.parseInt(rowID)- 1);  
+        Operations.clearField(); 
     }
 }

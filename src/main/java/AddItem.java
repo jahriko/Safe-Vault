@@ -17,8 +17,8 @@ public class AddItem extends javax.swing.JFrame {
     public AddItem() throws SQLException {
         initComponents();
         
-        addButtonIcon("Add", addButton);
-        addButtonIcon("Cancel", cancelButton);
+        AddItem.addButton.setIcon(IconFontSwing.buildIcon(GoogleMaterialDesignIcons.ADD, 16));
+        AddItem.cancelButton.setIcon(IconFontSwing.buildIcon(GoogleMaterialDesignIcons.CANCEL, 16));
     }
 
 
@@ -213,7 +213,7 @@ public class AddItem extends javax.swing.JFrame {
                             passwordField.getPassword(), 
                             detailsField.getText());
         
-        Frame.jTable1.setModel(Frame.customModel(SQL));
+        Frame.jTable1.setModel(Operations.updateTableData(SQL));
         dispose();
         
     }//GEN-LAST:event_addButtonActionPerformed
@@ -283,8 +283,8 @@ public class AddItem extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addButton;
-    private javax.swing.JButton cancelButton;
+    public static javax.swing.JButton addButton;
+    public static javax.swing.JButton cancelButton;
     private javax.swing.JTextArea detailsField;
     private javax.swing.JTextField emailField;
     private javax.swing.JLabel jLabel1;

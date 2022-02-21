@@ -1,42 +1,31 @@
 
 import com.formdev.flatlaf.FlatLightLaf;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import javax.swing.Icon;
-import javax.swing.table.DefaultTableModel;
-import jiconfont.swing.IconFontSwing;
 import jiconfont.icons.google_material_design_icons.GoogleMaterialDesignIcons;
+import jiconfont.swing.IconFontSwing;
 
 public class Frame extends javax.swing.JFrame {
     public static final String URL = "jdbc:sqlite:test.db";
-    
-    Connection connect = null;
-    Statement statement = null;
-    PreparedStatement prepStat = null;
-    ResultSet resultSet = null;
     
     private int loc = 0;
     
     public Frame() {
         initComponents();
-
-        addButtonIcon("Add", addButton);
-        addButtonIcon("Delete", deleteButton);
-        addButtonIcon("Edit", editButton);
+        
+        IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
+        
+        //Button Icons
+        Frame.addButton.setIcon(IconFontSwing.buildIcon(GoogleMaterialDesignIcons.ADD_BOX, 24));
+        Frame.deleteButton.setIcon(IconFontSwing.buildIcon(GoogleMaterialDesignIcons.DELETE, 24));
+        
         loc = jSplitPane2.getDividerLocation();
-        jSplitPane2.setDividerSize(-1); // Hides divider
-        jSplitPane2.getLeftComponent().setVisible(false);
         
-//        Database.getConnection();
+        jSplitPane2.setDividerSize(-1); // Disable Resizeable Divider
         
+        jSplitPane2.getLeftComponent().setVisible(false); //Hide side panel
 
-        try { populateSQL(jTable1); } catch ( Exception e ) { e.printStackTrace(); }
-        
+        Operations.displayAll();
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -46,7 +35,6 @@ public class Frame extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
-        editButton = new javax.swing.JButton();
         jSplitPane2 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -93,16 +81,6 @@ public class Frame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(deleteButton);
-
-        editButton.setFocusable(false);
-        editButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        editButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        editButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(editButton);
 
         jPanel2.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
@@ -256,202 +234,52 @@ public class Frame extends javax.swing.JFrame {
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         if (jTable1.getSelectedRow() > -1) {
-            try {
-                deleteSQL(String.valueOf(jTable1.getSelectedRow()+1));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            String rowData = String.valueOf(jTable1.getSelectedRow()+1);
+            Database.deleteSQL(rowData);
         }  
     }//GEN-LAST:event_deleteButtonActionPerformed
 
-    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
-
-    }//GEN-LAST:event_editButtonActionPerformed
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
+        // Show side panel
         if (!jSplitPane2.getLeftComponent().isVisible()) {
             jSplitPane2.getLeftComponent().setVisible(true);
-            jSplitPane2.setDividerLocation(loc);
+            jSplitPane2.setDividerLocation(-1);
         }
         
+        // Display fields with selected row data
         if (jTable1.getSelectedRow() > -1) {
-            try {
-                getSelectedData(String.valueOf(jTable1.getSelectedRow() + 1));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            String rowData = String.valueOf(jTable1.getSelectedRow() + 1);
+            Operations.displaySelectedRowToFields(rowData);
         } 
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        try {
-            
-            final String SQL = """
-                                UPDATE safeVault 
-                                SET site = ?, 
-                                    email = ?,
-                                    username = ?,
-                                    password = ?,
-                                    details = ?
-                                WHERE rowid = ?
-                                """;
-            
-            final String loadDataToTable = "SELECT site, username, email FROM safeVault";
-            
-            if (connect != null) {
-                String currentSite = siteField.getText();
-                String currentEmail = emailField.getText();
-                String currentUsername = usernameField.getText();
-                String currentPassword = String.valueOf(passwordField.getPassword());
-                String currentDetails = detailsField.getText();   
-                
-                Database.getConnection();
-                connect = Database.connect;
-                prepStat = connect.prepareStatement(SQL);
-                prepStat.setString(1, currentSite);
-                prepStat.setString(2, currentEmail);
-                prepStat.setString(3, currentUsername);
-                prepStat.setString(4, currentPassword);
-                prepStat.setString(5, currentDetails);
-                prepStat.setString(6, String.valueOf(jTable1.getSelectedRow() + 1));
-                prepStat.executeUpdate();
-                jTable1.setModel(customModel(loadDataToTable));
-                clearField();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        
+        Database.updateSQLData(siteField.getText(),
+                                 emailField.getText(),
+                                 usernameField.getText(),
+                                 String.valueOf(passwordField.getPassword()),
+                                 detailsField.getText(),
+                                 String.valueOf(jTable1.getSelectedRow() + 1));
+        
+        Operations.updateTableData("SELECT site, username, email FROM safeVault");
+        
+        Operations.clearField();
     }//GEN-LAST:event_updateButtonActionPerformed
 
     public static void main(String args[]) {
         FlatLightLaf.setup();
-        
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Frame().setVisible(true);
-            }
-        });
-        
-        
+                
+        java.awt.EventQueue.invokeLater(() -> new Frame().setVisible(true));
     }
     
-    private void populateSQL(javax.swing.JTable table) throws SQLException, ClassNotFoundException {
-        
-        final String SQL = "SELECT rowid, * FROM safeVault";
-        
-        Database.getConnection();
-        connect = Database.connect;
-        statement = connect.createStatement();
-        resultSet = statement.executeQuery(SQL);
-        
-        while (resultSet.next()) {  
-            String[] row = new String[3];
-            for (int i = 1 ; i <= 3 ; i++) {
-                row[i-1] = resultSet.getString(i+1);
-            }
-            ((DefaultTableModel) table.getModel()).insertRow(resultSet.getRow() - 1, row);
-        }
-        connect.close();
-        statement.close();
-        resultSet.close();
-    }
-    
-    private void getSelectedData (String rowID) throws ClassNotFoundException, SQLException {
-        final String SQL = "SELECT * FROM safeVault WHERE rowid = ?";
-        
-        Database.getConnection();
-        connect = Database.connect;
-        prepStat = connect.prepareStatement(SQL);
-        prepStat.setInt(1, Integer.valueOf(rowID));
-            
-        resultSet = prepStat.executeQuery();
-        
-        if (resultSet.next()) {
-            siteField.setText(resultSet.getString("site"));
-            emailField.setText(resultSet.getString("email"));
-            usernameField.setText(resultSet.getString("username"));
-            passwordField.setText(resultSet.getString("password"));
-            detailsField.setText(resultSet.getString("details"));
-        }
-        
-        connect.close();
-        prepStat.close();
-        resultSet.close();
-    }
-    
-    private void deleteSQL(String rowID) throws ClassNotFoundException, SQLException {
-        Class.forName("org.sqlite.JDBC");
-        final String SQL = "DELETE FROM safeVault WHERE rowid = " + rowID + ";";
-        
-        Database.getConnection();
-        connect = Database.connect;
-        statement = connect.createStatement();
-        statement.executeUpdate(SQL);
-        
-        ((DefaultTableModel) jTable1.getModel()).removeRow(Integer.parseInt(rowID)- 1);  
-        clearField();
-        
-    }
-    
-    private void clearField() {
-        siteField.setText("");
-        emailField.setText("");
-        usernameField.setText("");
-        passwordField.setText("");
-        detailsField.setText("");
-    }
-    
-    private void addButtonIcon(String buttonIs, javax.swing.JButton button) {
-        IconFontSwing.register(GoogleMaterialDesignIcons.getIconFont());
-        Icon icon = null;
-        
-        if (buttonIs.equals("Add")) {
-            icon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.ADD_BOX, 24);
-        } else if (buttonIs.equals("Delete")) {
-            icon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.DELETE, 24);
-        } else if (buttonIs.equals("Edit")) {
-            icon = IconFontSwing.buildIcon(GoogleMaterialDesignIcons.EDIT, 24);
-        }
-        
-        button.setIcon(icon);
-    }
-    
-    public static DefaultTableModel customModel(String query) {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0);
-        
-        try {
-            Connection connect = Database.getConnection();
-            Statement statement = connect.createStatement();
-            ResultSet resultSet = statement.executeQuery(query);
-            
-            if (resultSet.isBeforeFirst()) {
-                while (resultSet.next()) {
-                    Object[] dataObj = {
-                        resultSet.getString("site"),
-                        resultSet.getString("email"),
-                        resultSet.getString("username")
-                    };
-                    model.addRow(dataObj);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return model;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addButton;
-    private javax.swing.JButton deleteButton;
-    private javax.swing.JTextArea detailsField;
-    private javax.swing.JButton editButton;
-    private javax.swing.JTextField emailField;
+    public static javax.swing.JButton addButton;
+    public static javax.swing.JButton deleteButton;
+    public static javax.swing.JTextArea detailsField;
+    public static javax.swing.JTextField emailField;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -466,10 +294,10 @@ public class Frame extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane2;
     public static javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JPasswordField passwordField;
-    private javax.swing.JTextField siteField;
+    public static javax.swing.JPasswordField passwordField;
+    public static javax.swing.JTextField siteField;
     private javax.swing.JButton updateButton;
-    private javax.swing.JTextField usernameField;
+    public static javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables
 
 
