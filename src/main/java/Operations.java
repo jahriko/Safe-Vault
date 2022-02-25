@@ -91,19 +91,5 @@ public class Operations {
             e.printStackTrace();
         }
     }
-    
-    private static int loc = 0;
-    
-    public static void toggleSidePanel() {
-        
-        if (!Frame.jSplitPane2.getLeftComponent().isVisible()) {
-            Frame.jSplitPane2.getLeftComponent().setVisible(true);
-            Frame.jSplitPane2.setDividerLocation(loc);
-        } else {
-
-            Frame.jSplitPane2.getLeftComponent().setVisible(false); //Hide side panel
-        }
-        
-    }
 
 }
