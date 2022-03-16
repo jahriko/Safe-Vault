@@ -6,5 +6,5 @@
   - The code is messy.
 ---
 ## TODOs 
-- [ ] Add encryption.
+- [x] Add encryption.
 - [ ] Refactor everything.
