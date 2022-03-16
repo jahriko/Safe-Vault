@@ -1,4 +1,3 @@
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,17 +6,21 @@ import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
 
 public class Operations {
+    
+    private Operations() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void clearField() {
-        Frame.siteField.setText("");
-        Frame.emailField.setText("");
-        Frame.usernameField.setText("");
-        Frame.passwordField.setText("");
-        Frame.detailsField.setText("");
+        DashboardFrame.siteField.setText("");
+        DashboardFrame.emailField.setText("");
+        DashboardFrame.usernameField.setText("");
+        DashboardFrame.passwordField.setText("");
+        DashboardFrame.detailsField.setText("");
     }
     
     public static DefaultTableModel updateTableData(String query) {
-        DefaultTableModel tableModel = (DefaultTableModel) Frame.jTable1.getModel();
+        DefaultTableModel tableModel = (DefaultTableModel) DashboardFrame.table.getModel();
         tableModel.setRowCount(0);
         
         try (Connection connect = Database.getConnection();
@@ -60,7 +63,7 @@ public class Operations {
                     row[i-1] = resultSet.getString(i+1);
                 }
                 
-                ((DefaultTableModel) Frame.jTable1
+                ((DefaultTableModel) DashboardFrame.table
                                             .getModel())
                                             .insertRow(resultSet.getRow() - 1, row);
             }
@@ -73,6 +76,33 @@ public class Operations {
     public static void displaySelectedRowToFields (String rowID) {
         final String SQL = "SELECT * FROM safeVault WHERE rowid = ?";
         
+        
+        
+        try (Connection connect = Database.getConnection();
+             PreparedStatement prepStat = connect.prepareStatement(SQL);) {
+
+            prepStat.setInt(1, Integer.valueOf(rowID));
+            ResultSet resultSet = prepStat.executeQuery();
+            
+            String decryptedString = AESCrypt.decrypt(resultSet.getString("password"), AddItemFrame.secretKey);
+
+            if (resultSet.next()) {
+                DashboardFrame.siteField.setText(resultSet.getString("site"));
+                DashboardFrame.emailField.setText(resultSet.getString("email"));
+                DashboardFrame.usernameField.setText(resultSet.getString("username"));
+                DashboardFrame.passwordField.setText(decryptedString);
+                DashboardFrame.detailsField.setText(resultSet.getString("details"));
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static String get(String item, String rowID) {
+        final String SQL = "SELECT * FROM safeVault WHERE rowid = ?";
+        String value = "";
+        
         try (Connection connect = Database.getConnection();
              PreparedStatement prepStat = connect.prepareStatement(SQL);) {
 
@@ -80,16 +110,12 @@ public class Operations {
             ResultSet resultSet = prepStat.executeQuery();
 
             if (resultSet.next()) {
-                Frame.siteField.setText(resultSet.getString("site"));
-                Frame.emailField.setText(resultSet.getString("email"));
-                Frame.usernameField.setText(resultSet.getString("username"));
-                Frame.passwordField.setText(resultSet.getString("password"));
-                Frame.detailsField.setText(resultSet.getString("details"));
+                value = resultSet.getString(item);
             }
             
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
+        
+        return value;
     }
 
 }
