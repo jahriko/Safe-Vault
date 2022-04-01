@@ -1,5 +1,4 @@
 
-import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import jiconfont.icons.font_awesome.FontAwesome;
@@ -13,6 +12,8 @@ public class DashboardFrame extends javax.swing.JFrame {
     
     public DashboardFrame() {
         initComponents(); 
+        setLocationRelativeTo(null);
+
        
         //Button Icons
         IconFontSwing.register(FontAwesome.getIconFont());
@@ -252,7 +253,7 @@ public class DashboardFrame extends javax.swing.JFrame {
                 .addComponent(details)
                 .addGap(18, 18, 18)
                 .addComponent(scrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addComponent(updateBtn)
                 .addGap(38, 38, 38))
         );
@@ -284,8 +285,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_tableMouseClicked
 
     private void updateBtn(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtn
-        
-        
+
         char[] pw = passwordField.getPassword();
         String encryptedPassword = AESCrypt.encrypt(String.valueOf(pw), AddItemFrame.secretKey);
         
@@ -383,10 +383,10 @@ public class DashboardFrame extends javax.swing.JFrame {
         clipboard.setContents(stringSelection, null);
     }
     
-    public static void main(String[] args) {
-        FlatLightLaf.setup(); 
-        java.awt.EventQueue.invokeLater(() -> new DashboardFrame().setVisible(true));
-    }
+//    public static void main(String[] args) {
+//        FlatLightLaf.setup(); 
+//        java.awt.EventQueue.invokeLater(() -> new DashboardFrame().setVisible(true));
+//    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

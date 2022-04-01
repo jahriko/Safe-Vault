@@ -12,8 +12,8 @@ public class AESCrypt {
     private static SecretKeySpec secretKey;
     private static byte[] key;
     
+    private AESCrypt() { throw new IllegalStateException("Utility Class"); }
     
-
     public static void setKey(final String myKey) {
         MessageDigest sha = null;
         try {

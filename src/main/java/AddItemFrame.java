@@ -12,11 +12,12 @@ public class AddItemFrame extends javax.swing.JFrame {
     Connection connect          = null;
     PreparedStatement prepStat  = null;
     ResultSet resultSet         = null;
-    
+
     static final String secretKey = "!e3&3r@0$N`*";
 
     public AddItemFrame() throws SQLException {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -204,7 +205,7 @@ public class AddItemFrame extends javax.swing.JFrame {
 
     private void addBtn(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtn
         final String SQL = "SELECT site, username, email FROM safeVault";
-        
+
         if (siteField.getText().equals("")                 &&
             emailField.getText().equals("")                &&
             usernameField.getText().equals("")             &&
@@ -215,29 +216,29 @@ public class AddItemFrame extends javax.swing.JFrame {
             warning.setText("Fields are empty");
             return;
         }
-        
+
         if (!(Arrays.equals(passwordField.getPassword(), confirmPasswordField.getPassword()))) {
             warning.setText("Password not matched");
             return;
         }
-        
-        
+
+
         char[] password = passwordField.getPassword();
         String encryptedPassword = AESCrypt.encrypt(String.valueOf(password), secretKey);
-        
-        
-        
+
+
+
         Database.getConnection();
-        Database.insertData(siteField.getText(), 
-                            emailField.getText(), 
-                            usernameField.getText(), 
-                            encryptedPassword, 
+        Database.insertData(siteField.getText(),
+                            emailField.getText(),
+                            usernameField.getText(),
+                            encryptedPassword,
                             detailsField.getText());
-        
+
         DashboardFrame.table.setModel(Operations.updateTableData(SQL));
         System.out.println("Added to Database");
         dispose();
-        
+
     }//GEN-LAST:event_addBtn
 
     private void cancelBtn(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtn
@@ -263,19 +264,19 @@ public class AddItemFrame extends javax.swing.JFrame {
             showHide2.setText("H");
         }
     }//GEN-LAST:event_showHide2Btn
+//
+//    public static void main(String args[]) {
+//
+//        java.awt.EventQueue.invokeLater(() -> {
+//                try {
+//                    FlatLightLaf.setup();
+//                    new AddItemFrame().setVisible(true);
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(AddItemFrame.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//        });
+//    }
 
-    public static void main(String args[]) {
-
-        java.awt.EventQueue.invokeLater(() -> {
-                try {
-                    FlatLightLaf.setup();
-                    new AddItemFrame().setVisible(true);
-                } catch (SQLException ex) {
-                    Logger.getLogger(AddItemFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-        });
-    }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton addBtn;
     public static javax.swing.JButton cancelBtn;

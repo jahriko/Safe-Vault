@@ -81,20 +81,18 @@ public class Database {
     public static void insertData(String siteField, String emailField, String usernameField, String passwordField, String detailsField) {
         final String SQL = "INSERT INTO safeVault (site, email, username, password ,details) VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection connect = DriverManager.getConnection(URL + resetPath)) {
-            PreparedStatement prepStat = connect.prepareStatement(SQL);
+        try (Connection connect = DriverManager.getConnection(URL + resetPath);
+             PreparedStatement prepStat = connect.prepareStatement(SQL);) {
             
-            if (connect == null) {
-                System.out.println("Database not connected");
-                return;
+            if (connect != null) {
+                prepStat.setString(1, siteField);
+                prepStat.setString(2, emailField);
+                prepStat.setString(3, usernameField);
+                prepStat.setString(4, passwordField);
+                prepStat.setString(5, detailsField);
+                prepStat.executeUpdate();
             }
 
-            prepStat.setString(1, siteField);
-            prepStat.setString(2, emailField);
-            prepStat.setString(3, usernameField);
-            prepStat.setString(4, passwordField);
-            prepStat.setString(5, detailsField);
-            prepStat.executeUpdate();
         } 
         catch (SQLException e) { e.printStackTrace(); } 
     }
