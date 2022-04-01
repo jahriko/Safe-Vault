@@ -6,3 +6,4 @@
 ## TODOs 
 - [x] Add encryption. (AES Encryption)
 - [x] Refactor everything.
+- [ ] More Refactor.
