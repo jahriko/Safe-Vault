@@ -1,7 +1,7 @@
 
   NOTE : 
-  - Login credentials will be stored on local storage, using SQLite.
-  - Yes.
+  - Use this at your own risk. This project is intended for demonstration purposes.
+  - Login credentials will be stored on local storage, using SQLite. 
 ---
 ## TODOs 
 - [x] Add encryption. (AES Encryption)
