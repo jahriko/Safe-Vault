@@ -1,7 +1,7 @@
 
   NOTE : 
   - Use this at your own risk. This project is intended for demonstration purposes.
-  - Login credentials will be stored on local storage, using SQLite. 
+  - Information will be stored on local storage, using SQLite. 
 ---
 ## TODOs 
 - [x] Add encryption. (AES Encryption)
