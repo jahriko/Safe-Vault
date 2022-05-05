@@ -1,23 +1,29 @@
-
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import jiconfont.icons.font_awesome.FontAwesome;
 import java.awt.datatransfer.StringSelection;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import jiconfont.swing.IconFontSwing;
 
-public class DashboardFrame extends javax.swing.JFrame {
+public class Dashboard extends javax.swing.JFrame {
     public static final String URL = "jdbc:sqlite:test.db";
+
     
-    public DashboardFrame() {
+    public Dashboard() throws IOException {
         initComponents(); 
         setLocationRelativeTo(null);
-
+        
+        BufferedImage mapmodifiable = ImageIO.read(new File("images/lock.png"));
+        setIconImage(mapmodifiable);
        
         //Button Icons
         IconFontSwing.register(FontAwesome.getIconFont());
-        DashboardFrame.addMenuItem.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS_SQUARE, 24));
+        Dashboard.addMenuItem.setIcon(IconFontSwing.buildIcon(FontAwesome.PLUS_SQUARE, 24));
         
         // Disable Resizeable Divider
         splitPane.setDividerSize(-1); 
@@ -253,7 +259,7 @@ public class DashboardFrame extends javax.swing.JFrame {
                 .addComponent(details)
                 .addGap(18, 18, 18)
                 .addComponent(scrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                 .addComponent(updateBtn)
                 .addGap(38, 38, 38))
         );
@@ -269,8 +275,9 @@ public class DashboardFrame extends javax.swing.JFrame {
 
     private void addBtn(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtn
         try {
-            new AddItemFrame().setVisible(true);
-        } catch (SQLException e) {
+            new AddAccount().setVisible(true);
+        } 
+        catch (SQLException e) {
            e.printStackTrace();
         }
     }//GEN-LAST:event_addBtn
@@ -287,7 +294,7 @@ public class DashboardFrame extends javax.swing.JFrame {
     private void updateBtn(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtn
 
         char[] pw = passwordField.getPassword();
-        String encryptedPassword = AESCrypt.encrypt(String.valueOf(pw), AddItemFrame.secretKey);
+        String encryptedPassword = AESCrypt.encrypt(String.valueOf(pw), AddAccount.secretKey);
         
         Database.updateSQLData(siteField.getText(),
                                  emailField.getText(),
@@ -342,7 +349,7 @@ public class DashboardFrame extends javax.swing.JFrame {
             getPassword = Operations.get("password", rowData);
         } 
         
-        String decryptedPassword = AESCrypt.decrypt(getPassword, AddItemFrame.secretKey);
+        String decryptedPassword = AESCrypt.decrypt(getPassword, AddAccount.secretKey);
         
         copyToClipboard(decryptedPassword);
     }//GEN-LAST:event_copyPasswordPopupItem
@@ -371,7 +378,8 @@ public class DashboardFrame extends javax.swing.JFrame {
         if (showHide.isSelected()) {
             passwordField.setEchoChar((char)0);
             showHide.setText("S");
-        } else {
+        } 
+        else {
             passwordField.setEchoChar('•');
              showHide.setText("H");
         }

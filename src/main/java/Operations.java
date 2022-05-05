@@ -12,15 +12,15 @@ public class Operations {
     }
 
     public static void clearField() {
-        DashboardFrame.siteField.setText("");
-        DashboardFrame.emailField.setText("");
-        DashboardFrame.usernameField.setText("");
-        DashboardFrame.passwordField.setText("");
-        DashboardFrame.detailsField.setText("");
+        Dashboard.siteField.setText("");
+        Dashboard.emailField.setText("");
+        Dashboard.usernameField.setText("");
+        Dashboard.passwordField.setText("");
+        Dashboard.detailsField.setText("");
     }
     
     public static DefaultTableModel updateTableData(String query) {
-        DefaultTableModel tableModel = (DefaultTableModel) DashboardFrame.table.getModel();
+        DefaultTableModel tableModel = (DefaultTableModel) Dashboard.table.getModel();
         tableModel.setRowCount(0);
         
         try (Connection connect = Database.getConnection();
@@ -41,7 +41,8 @@ public class Operations {
 
                 } 
  
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
         }
         
@@ -63,12 +64,13 @@ public class Operations {
                     row[i-1] = resultSet.getString(i+1);
                 }
                 
-                ((DefaultTableModel) DashboardFrame.table
+                ((DefaultTableModel) Dashboard.table
                                             .getModel())
                                             .insertRow(resultSet.getRow() - 1, row);
             }
             
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -84,17 +86,18 @@ public class Operations {
             prepStat.setInt(1, Integer.valueOf(rowID));
             ResultSet resultSet = prepStat.executeQuery();
             
-            String decryptedString = AESCrypt.decrypt(resultSet.getString("password"), AddItemFrame.secretKey);
+            String decryptedString = AESCrypt.decrypt(resultSet.getString("password"), AddAccount.secretKey);
 
             if (resultSet.next()) {
-                DashboardFrame.siteField.setText(resultSet.getString("site"));
-                DashboardFrame.emailField.setText(resultSet.getString("email"));
-                DashboardFrame.usernameField.setText(resultSet.getString("username"));
-                DashboardFrame.passwordField.setText(decryptedString);
-                DashboardFrame.detailsField.setText(resultSet.getString("details"));
+                Dashboard.siteField.setText(resultSet.getString("site"));
+                Dashboard.emailField.setText(resultSet.getString("email"));
+                Dashboard.usernameField.setText(resultSet.getString("username"));
+                Dashboard.passwordField.setText(decryptedString);
+                Dashboard.detailsField.setText(resultSet.getString("details"));
             }
             
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -113,7 +116,8 @@ public class Operations {
                 value = resultSet.getString(item);
             }
             
-        } catch (SQLException e) { e.printStackTrace(); }
+        } 
+        catch (SQLException e) { e.printStackTrace(); }
         
         return value;
     }

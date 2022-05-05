@@ -7,7 +7,7 @@ import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
 
 public class Database {
-    private static String URL = "jdbc:sqlite:";
+    private static String URL       = "jdbc:sqlite:";
     private static String resetPath = "";
     
     private Database() {
@@ -116,13 +116,11 @@ public class Database {
         
         try (Connection connect = Database.getConnection();
              PreparedStatement prepStat = connect.prepareStatement(SQL)) {
-
             
             if (connect == null) {
                 System.out.println("Database not connected");
                 return;
             }
-
                     prepStat.setString(1, site);
                     prepStat.setString(2, email);
                     prepStat.setString(3, username);
@@ -146,7 +144,7 @@ public class Database {
         } 
         catch (SQLException e) { e.printStackTrace(); }
 
-        ((DefaultTableModel) DashboardFrame.table.getModel()).removeRow(Integer.parseInt(rowID)- 1);  
+        ((DefaultTableModel) Dashboard.table.getModel()).removeRow(Integer.parseInt(rowID)- 1);  
         Operations.clearField(); 
     }
     

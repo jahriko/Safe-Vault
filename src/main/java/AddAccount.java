@@ -1,21 +1,18 @@
 
-import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class AddItemFrame extends javax.swing.JFrame {
+public class AddAccount extends javax.swing.JFrame {
     Connection connect          = null;
     PreparedStatement prepStat  = null;
     ResultSet resultSet         = null;
 
     static final String secretKey = "!e3&3r@0$N`*";
 
-    public AddItemFrame() throws SQLException {
+    public AddAccount() throws SQLException {
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -222,11 +219,8 @@ public class AddItemFrame extends javax.swing.JFrame {
             return;
         }
 
-
         char[] password = passwordField.getPassword();
         String encryptedPassword = AESCrypt.encrypt(String.valueOf(password), secretKey);
-
-
 
         Database.getConnection();
         Database.insertData(siteField.getText(),
@@ -235,7 +229,7 @@ public class AddItemFrame extends javax.swing.JFrame {
                             encryptedPassword,
                             detailsField.getText());
 
-        DashboardFrame.table.setModel(Operations.updateTableData(SQL));
+        Dashboard.table.setModel(Operations.updateTableData(SQL));
         System.out.println("Added to Database");
         dispose();
 
@@ -249,7 +243,8 @@ public class AddItemFrame extends javax.swing.JFrame {
         if (showHide.isSelected()) {
             passwordField.setEchoChar((char)0);
             showHide.setText("S");
-        } else {
+        } 
+        else {
             passwordField.setEchoChar('•');
             showHide.setText("H");
         }
@@ -259,12 +254,13 @@ public class AddItemFrame extends javax.swing.JFrame {
         if (showHide2.isSelected()) {
             confirmPasswordField.setEchoChar((char)0);
             showHide2.setText("S");
-        } else {
+        } 
+        else {
             confirmPasswordField.setEchoChar('•');
             showHide2.setText("H");
         }
     }//GEN-LAST:event_showHide2Btn
-//
+
 //    public static void main(String args[]) {
 //
 //        java.awt.EventQueue.invokeLater(() -> {

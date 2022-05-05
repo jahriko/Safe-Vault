@@ -1,15 +1,15 @@
 
-
 import java.io.FileWriter;
 import org.json.simple.JSONObject;
 
-public class SetPasswordDialog extends javax.swing.JDialog {
-    static String secret = "tDW234!&k";
+public class SetPassword extends javax.swing.JDialog {
+    static String secret = "tDW234!&k"; // Used for salting, i guess.
 
-    public SetPasswordDialog(java.awt.Frame parent, boolean modal) {
+    public SetPassword(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setLocationRelativeTo(null);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -115,6 +115,7 @@ public class SetPasswordDialog extends javax.swing.JDialog {
 
     private void setPasswordBtn(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setPasswordBtn
 
+        // Display error msg when password and confirm password do not match
         if (!String.valueOf(setPassField.getPassword()).equals
             (String.valueOf(confirmPassField.getPassword()))) {
 
@@ -122,6 +123,7 @@ public class SetPasswordDialog extends javax.swing.JDialog {
             return;
         }
 
+        // Display error msg when fields are empty
         if (setPassField.getPassword().length == 0 ||
             confirmPassField.getPassword().length == 0) {
 
@@ -132,6 +134,7 @@ public class SetPasswordDialog extends javax.swing.JDialog {
         String password = String.valueOf(setPassField.getPassword());
         String encryptedPassword = AESCrypt.encrypt(password, secret);
 
+        // Stores the encrypted password in login.json file
         try {
             JSONObject jsonObj = new JSONObject();
 
@@ -141,19 +144,21 @@ public class SetPasswordDialog extends javax.swing.JDialog {
             file.write(jsonObj.toJSONString());
             file.close();
 
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             e.printStackTrace();
         }
         
         dispose();
-        new EnterPasswordDialog(null, true).setVisible(true);
+        new Security(null, true).setVisible(true);
     }//GEN-LAST:event_setPasswordBtn
 
     private void showHide(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showHide
         if (showHide.isSelected()) {
             setPassField.setEchoChar((char)0);
             showHide.setText("S");
-        } else {
+        } 
+        else {
             setPassField.setEchoChar('•');
             showHide.setText("H");
         }
@@ -163,12 +168,15 @@ public class SetPasswordDialog extends javax.swing.JDialog {
         if (showHide2.isSelected()) {
             confirmPassField.setEchoChar((char)0);
             showHide2.setText("S");
-        } else {
+        } 
+        else {
             confirmPassField.setEchoChar('•');
             showHide2.setText("H");
         }
     }//GEN-LAST:event_showHide2
 
+    
+// For debugging purposes
 //    public static void main(String args[]) {
 //
 //        java.awt.EventQueue.invokeLater(new Runnable() {

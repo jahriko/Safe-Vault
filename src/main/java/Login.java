@@ -1,4 +1,3 @@
-
 import com.formdev.flatlaf.FlatLightLaf;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,10 +15,10 @@ public class Login {
         JSONObject obj = (JSONObject) parser.parse(new FileReader("login.json"));
         
         if (obj.get("password").toString().isBlank()) {
-            new SetPasswordDialog(null, true).setVisible(true);
+            new SetPassword(null, true).setVisible(true);
         }
         else {
-            new EnterPasswordDialog(null, true).setVisible(true);
+            new EnterPassword(null, true).setVisible(true);
         }
         
     }
